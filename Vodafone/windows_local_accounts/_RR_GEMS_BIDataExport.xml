@@ -14,7 +14,7 @@
                     <failed message="There was a problem with the task. Please contact your Osirium administrator." type="default" />
                 </command>
                 <command type="local_shell" command="smb.get" source="//%(share_root)s%(device_name)s/MDMDevice_GC_RR.csv" destination="%(local_filename)s">
-                    <local_filename>%(filestore_location)s/%(device_name)s/MDMDevice_GC_RR_%(O_TASK_UTC_STARTTIME)s.csv</local_filename>
+                    <local_filename>%(filestore_location)s/%(device_name)s/MDMDevice_GC_RR.csv</local_filename>
                     <success type="ci_match" value="" />
                     <failed message="There was a problem with fetching the file." type="default" />
                 </command>
