@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate>
+    
+    <configurations>
+        <configuration fieldname="share_directory" fieldtype="device" value="%SYSTEMDRIVE%\osirium"/>
+        <configuration fieldname="share_root" fieldtype="device" value="osirium_"/>
+    </configurations>
+
+    <tasks>
+        <task name="verify_and_create_share" type="status">
+            <commands>
+                <command>mkdir %(share_directory)s\%(device_name)s
+                    <exit_codes>
+                        <exit_code>1</exit_code>
+                    </exit_codes>
+                    <success type="ci_match" value=""/>
+                    <success type="ci_in" value="already exists"/>
+                    <failed type="default"/>
+                </command>
+                <command>net share %(share_root)s%(device_name)s /delete
+                    <exit_codes>
+                        <exit_code>2</exit_code>
+                    </exit_codes>
+                    <success type="ci_in" value="This shared resource does not exist"/>
+                    <success type="ci_in" value="was deleted successfully"/>
+                    <failed type="default"/>
+                </command>
+                <command>net share %(share_root)s%(device_name)s=%(share_directory)s\%(device_name)s /grant:%(logonname)s,full
+                    <exit_codes>
+                        <exit_code>2</exit_code>
+                    </exit_codes>
+                    <success type="ci_in" value="The name has already been shared"/>
+                    <success type="ci_in" value="was shared successfully"/>
+                    <failed type="default"/>
+                </command>
+                <command>echo y|cacls %(share_directory)s\%(device_name)s /G %(logonname)s:F administrators:F
+                    <success type="ci_in" value="processed dir"/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>
+    </tasks>
+
+</devicetemplate>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+	<tasks>
+		<task display_name='Flush DNS Cache' name='flush_dns' type='status'>
+			<commands>
+				<command>ipconfig /flushdns
+					<success type="ci_in" value="Successfully flushed the DNS Resolver Cache"/>
+					<failed type="default"/>
+				</command>
+			</commands>
+		</task>
+	</tasks>
+</devicetemplate>

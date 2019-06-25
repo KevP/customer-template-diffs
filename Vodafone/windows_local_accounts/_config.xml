@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate>
+
+    <configurations>
+        <configuration fieldname="management_system_rolename" fieldtype="device" value="readwrite"/>
+        <configuration fieldname="accountname_len" fieldtype="device" value="20"/>
+        <configuration fieldname="password_len" fieldtype="device" value="14"/>
+        <configuration fieldname="password_chset1" fieldtype="device" value="abcdefghijklmnopqrstuvwxyz"/>
+        <configuration fieldname="password_chset2" fieldtype="device" value="ABCDEFGHIJKLMNOPQRSTUVWZ"/>
+        <configuration fieldname="password_chset3" fieldtype="device" value="0123456789"/>
+        <configuration fieldname="password_chset4" fieldtype="device" value=","/>
+    </configurations>
+
+</devicetemplate>

@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+  <tasks>
+    <task display_name='Reset all active non-administrator RDP sessions' name='reset_active_non_admin_rdp' type='status'>
+      <commands>
+        <command>query session | findstr rdp | findstr /v administrator | findstr /v Listen</command>
+        <command>query session | findstr rdp | findstr /v administrator | findstr /v Listen&gt; osiriumactiverdpsessions.txt</command>
+        <command>type osiriumactiverdpsessions.txt</command>
+        <command>FOR /f %%i IN (osiriumactiverdpsessions.txt) DO reset session %%i
+          <success type="default"/>
+        </command>
+        <command>del osiriumactiverdpsessions.txt
+          <success message="All active non-administrator RDP sessions have been reset" type="ci_in" value=""/>
+        </command>
+      </commands>
+    </task>
+  </tasks>
+</devicetemplate>

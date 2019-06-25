@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplates locale="GB_en" template_format="4.1">
+
+    <devicetemplate display_name="Windows (Manage Local Accounts)" name="windows_local_accounts" vendor="Microsoft" type="windows"
+        os_version_min="XP" os_version_max="2012 R2"
+        version_major="18" version_minor="0">
+
+        <release_note timestamp="20150326T150000">
+            RDP port can now be configured for connection to a device. Defaults to port 3389.
+        </release_note>
+
+        <release_note timestamp="20140801T161300">
+            Additional service tasks added.
+        </release_note>
+
+        <release_note timestamp="20140804T112700">
+            Personalised guest accounts are not allowed to change their own passwords.
+        </release_note>
+
+        <release_note timestamp="20140804T112300">
+            Added enable/disable account tasks.
+        </release_note>
+
+        <release_note timestamp="20130924T141300">
+            Added 'Check for installed Hotfix (Q/KB######)' and 'Check Internet Connectivity' tasks.
+        </release_note>
+
+        <release_note timestamp="20130221T183300">
+            Enhanced Techout now contains IP, routing, netstat and task information.
+        </release_note>
+
+        <release_note timestamp="20121011T105500">
+            Backups are unavailable.
+        </release_note>
+
+        <versions>
+            <version>
+                <line nr="0" type="ci_in">[567]\.\d\.\d+</line>
+            </version>
+        </versions>
+
+        <tasks>
+            <task name="version_command" type="status">
+                <commands>
+                    <command format="output_text" regex_capture="Microsoft\s+Windows.*\[Version\s+(.*)\]" section_line_count="10">ver
+                        <success type="default"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="device_provision_start" type="status">
+                <commands>
+                    <command taskname="read_version" type="call"/>
+                    <command>reg add HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
+                        <conditions>
+                            <testNonBlank name="version"/>
+                            <testRe name="version" value="6.*"/>
+                        </conditions>
+                        <success type="ci_in" value="The operation completed successfully"/>
+                        <success type="default"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="device_provision_end" type="unimplemented"/>
+
+            <task name="device_unprovision_start" type="status">
+                <commands>
+                    <command>net share %(share_root)s%(device_name)s /delete
+                        <exit_codes>
+                            <exit_code>2</exit_code>
+                        </exit_codes>
+                        <success type="ci_in" value="This shared resource does not exist"/>
+                        <success type="ci_in" value="was deleted successfully"/>
+                        <failed type="default"/>
+                    </command>
+                    <command>rmdir /S/Q %(share_directory)s
+                        <exit_codes>
+                            <exit_code>2</exit_code>
+                        </exit_codes>
+                        <success type="ci_match" value=""/>
+                        <success type="ci_in" value="The system cannot find the file specified"/>
+                        <failed type="default"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="device_unprovision_end" type="unimplemented"/>
+
+            <task name="user_show_all" type="dataset">
+                <commands>
+                    <command format="textual_dataset" preamble_line_count="3" response_timeout="300" section_line_split=" ">net user
+                        <delete_lines>
+                            <delete_line>The command completed.*</delete_line>
+                        </delete_lines>
+                        <attribute name="name"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="user_add" type="status">
+                <commands>
+                    <command>net user %(username)s %(userpassword)s /add /comment:&quot;Created by Osirium.&quot;
+                        <success type="ci_match" value=""/>
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <failed type="default"/>
+                    </command>
+                    <command>net user %(username)s /Passwordchg:No
+                        <conditions>
+                            <testEq name="accesstoken" value="guest"/>
+                        </conditions>
+                        <success type="ci_match" value=""/>
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <failed type="default"/>
+                    </command>
+                    <command>net localgroup Administrators %(username)s /add
+                        <conditions>
+                            <testEq name="accesstoken" value="readwrite"/>
+                        </conditions>
+                        <success type="ci_match" value=""/>
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <failed type="default"/>
+                    </command>
+                    <command>net localgroup &quot;Power Users&quot; %(username)s /add
+                        <conditions>
+                            <testEq name="accesstoken" value="poweruser"/>
+                        </conditions>
+                        <success type="ci_match" value=""/>
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <failed type="default"/>
+                    </command>
+                    <command>net localgroup &quot;Remote Desktop Users&quot; %(username)s /add
+                        <success type="ci_match" value=""/>
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <failed type="default"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="user_set_password" type="status">
+                <commands>
+                    <command>net user %(username)s %(userpassword)s
+                        <success type="ci_match" value=""/>
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <failed type="default"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="user_delete" type="status">
+                <commands>
+                    <command>net user %(username)s /delete
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <success type="ci_in" value="Failed to remove user. (Invalid name)"/>
+                        <failed type="default"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="user_enable" type="status">
+                <commands>
+                    <command>net user %(username)s /active:yes
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <success type="ci_in" value="Failed to remove user. (Invalid name)"/>
+                        <failed type="default"/>
+                    </command>
+                </commands>
+            </task>
+
+            <task name="user_disable" type="status">
+                <commands>
+                    <command>net user %(username)s /active:no
+                        <success type="ci_in" value="The command completed successfully"/>
+                        <success type="ci_in" value="Failed to remove user. (Invalid name)"/>
+                        <failed type="default"/>
+                    </command>
+                </commands>
+            </task>
+        </tasks>
+
+    </devicetemplate>
+</devicetemplates>

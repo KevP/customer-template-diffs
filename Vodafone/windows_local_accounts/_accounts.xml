@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+
+	<accounts>
+		<account hidden="no" name="Administrator" system="yes"/>
+		<account hidden="no" name="Guest" system="yes"/>
+		<account hidden="no" name="ASPNET" system="yes"/>
+		<account hidden="no" name="SUPPORT_388945a0" system="yes"/>
+		<account hidden="no" name="HelpAssistant" system="yes"/>
+	</accounts>
+
+	<accesstokens>
+		<accesstoken display_name="Guest" level="10" logon_name_template="%user_name%_guest" name="guest"/>
+		<accesstoken display_name="Power User" level="70" logon_name_template="%user_name%_power" name="poweruser"/>
+		<accesstoken display_name="Administrator" level="90" logon_name_template="%user_name%_admin" name="readwrite"/>
+	</accesstokens>
+	
+</devicetemplate>

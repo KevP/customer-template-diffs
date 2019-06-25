@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+	<tasks>
+		<task display_name="Arp Flush" name="arp_flush" type="status">
+			<commands>
+				<command>netsh interface ip delete arpcache
+					<success message="Successfully flushed the ARP cache" type="ci_match" value=""/>
+					<success message="Successfully flushed the ARP cache" type="ci_in" value="Ok"/>
+					<success message="Successfully flushed the ARP cache" type="ci_in" value="The command completed successfully"/>
+					<failed type="default"/>
+				</command>
+			</commands>
+		</task>
+	</tasks>
+</devicetemplate>

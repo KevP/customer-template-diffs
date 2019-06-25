@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate>
+
+	<parameters>
+		<parameter display_name="Service" fieldname="service" fieldtype="list" ondevice="no" aslookup="no"/>
+	</parameters>
+
+    <tasks>
+        <task display_name="Stop Service" name="service_stop" type="status">
+            <input display_name="Service name:" name="service" device_parameter="service" type="select"/>
+            <commands>
+                <command>net stop %(service)s
+                    <success type="ci_in" value="service was stopped successfully" message="The service was stopped successfully."/>
+                    <success type="ci_in" value="is not started" message="The service was not started."/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>
+
+        <task display_name="Start Service" name="service_start" type="status">
+            <input display_name="Service name:" name="service" device_parameter="service" type="select"/>
+            <commands>
+                <command>net start %(service)s
+                    <success type="ci_in" value="service was started successfully" message="The service was started successfully."/>
+                    <success type="ci_in" value="already been started" message="The service is already started."/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>
+
+        <task display_name="Restart Service" name="restart_service" type="status">
+            <input display_name="Service name:" name="service" device_parameter="service" type="select"/>
+            <commands>
+                <command>net stop %(service)s
+                    <success type="ci_in" value="stopped successfully"/>
+                    <success type="ci_in" value="is not started"/>
+                    <failed type="default"/>
+                </command>
+                <command>net start %(service)s
+                    <success type="ci_in" value="started successfully" message="The service has been restarted."/>
+                    <failed type="default" message="The service failed to be restarted."/>
+                </command>
+            </commands>
+        </task>
+
+        <task display_name="Show Service Status" name="show_service_status" type="status">
+            <input display_name="Service name:" name="service" device_parameter="service" type="select"/>
+            <commands>
+                <command>sc query %(service)s
+                    <failed type="ci_in" value="does not exist" message="The specified service does not exist."/>
+                    <success type="default"/>
+                </command>
+                <command format="update_env" attribute="state">sc query %(service)s | findstr STATE
+                    <response line_nr="0" token_nr="3"/>
+                </command>
+                <command newline="lf">
+                    <success type="default" message="The service is %(state)s."/>
+                </command>
+            </commands>
+        </task>
+    </tasks>
+
+</devicetemplate>

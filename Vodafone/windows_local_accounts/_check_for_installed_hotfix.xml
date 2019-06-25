@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+	<tasks>
+		<task display_name='Check for Installed Hotfix' name='check_for_installed_hotfix' type='status'>
+			<input display_name="Windows Hotfix Number (Format: Q/KB######)" name="hotfix" type="string"/>
+			<commands>
+				<command response_timeout="300">systeminfo | findstr %(hotfix)s
+					<success message="Hotfix: &quot;%(hotfix)s&quot; is installed on this system." type="ci_in" value=".*\[\d+\]:\s\w+\d+.*"/>
+					<failed message="Hotfix: &quot;%(hotfix)s&quot; is NOT installed on this system." type="default"/>
+				</command>
+			</commands>
+		</task>
+	</tasks>
+</devicetemplate>

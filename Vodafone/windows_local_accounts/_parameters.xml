@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate>
+
+    <parameters>
+        <parameter aslookup="no" connectioncritical="yes" display_name="Hostname" fieldname="hostname" fieldtype="hostname" ondevice="no" ordering="001.000"/>
+        <parameter aslookup="no" connectioncritical="yes" display_name="IP Address" fieldname="ip_address" fieldtype="ip" ondevice="no" ordering="001.001"/>
+        <parameter connectioncritical="yes" display_name="RDP Port" fieldname="rdp_port" fieldtype="rdpport" ondevice="no" ordering="001.002"/>
+    </parameters>
+
+</devicetemplate>

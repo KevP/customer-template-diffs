@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+	<tasks>
+		<task access="" name="read_version" type="status">
+			<commands>
+				<!-- makes version available for later processing -->
+				<command attribute="version" format="update_env" regex_capture="Microsoft\s+Windows.*\[Version\s+(.*)\]" section_line_count="10">VER
+					<response line_nr="0" name="value"/>
+				</command>
+			</commands>
+		</task>
+	</tasks>
+</devicetemplate>

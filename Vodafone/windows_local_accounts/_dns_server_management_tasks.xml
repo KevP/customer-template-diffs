@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate>
+
+    <release_note timestamp="20150126T092612">
+        Microsoft DNS Server management tasks added.
+    </release_note>
+    
+	<parameters>
+		<parameter display_name="DNS Zone" fieldname="dns_zone" fieldtype="list" ondevice="no" aslookup="no" ordering="6.00"/>
+	</parameters>
+
+    <tasks>
+        <task display_name="DNS: Clear Cache" name="dns_clear_cache" type="status">
+            <commands>
+                <command>dnscmd 127.0.0.1 /clearcache
+                    <success type="ci_in" value="completed successfully" message="DNS cache cleared."/>
+                    <failed type="default"/>
+                </command>
+            </commands>        
+        </task>
+        
+        <task display_name="DNS: Server Info Techout" name="dns_server_info_techout" type="status">
+            <commands>
+                <command>dnscmd 127.0.0.1 /info &gt; %(share_directory)s\%(device_name)s\dns_server_info_techout.txt</command>
+                <command type="local_shell" command="smb.get" source="//%(share_root)s%(device_name)s/dns_server_info_techout.txt" destination="%(local_filename)s">
+                <local_filename>%(filestore_location)s/%(device_name)s/dns_server_info_techout_%(O_TASK_UTC_STARTTIME)s.txt</local_filename>
+                </command>
+                <command>del %(share_directory)s\%(device_name)s\dns_server_info_techout.txt
+                    <success type="ci_match" value="" message="DNS Server Info Techout complete."/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>
+        
+        <task display_name="DNS: List Zones" name="dns_list_zones" type="status">
+            <commands>
+                <command>dnscmd 127.0.0.1 /enumzones &gt; %(share_directory)s\%(device_name)s\dns_list_zones.txt</command>
+                <command type="local_shell" command="smb.get" source="//%(share_root)s%(device_name)s/dns_list_zones.txt" destination="%(local_filename)s">
+                <local_filename>%(filestore_location)s/%(device_name)s/dns_list_zones_%(O_TASK_UTC_STARTTIME)s.txt</local_filename>
+                </command>
+                <command>del %(share_directory)s\%(device_name)s\dns_list_zones.txt
+                    <success type="ci_match" value="" message="Creation of DNS Zone List complete."/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>    
+    
+        <task display_name="DNS: Export Zone" name="dns_export_zone" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <commands>
+                <command>dnscmd 127.0.0.1 /exportzone %(dns_zone)s zone_export_%(dns_zone)s.txt</command>
+                <command>xcopy %%windir%%\system32\dns\zone_export_%(dns_zone)s.txt %(share_directory)s\%(device_name)s /q /r /y
+                    <success type="ci_in" value="1 File(s) copied"/>
+                    <failed type="default" message="Unable to copy out the DNS zone export file."/>
+                </command>
+                <command type="local_shell" command="smb.get" source="//%(share_root)s%(device_name)s/dns_zone_export_%(dns_zone)s.txt" destination="%(local_filename)s">
+                <local_filename>%(filestore_location)s/%(device_name)s/dns_zone_export_%(dns_zone)s_%(O_TASK_UTC_STARTTIME)s.txt</local_filename>
+                </command>
+                <command>del %(share_directory)s\%(device_name)s\dns_list_zones.txt
+                    <success type="ci_match" value="" message="Export of DNS Zone complete."/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>        
+
+        <task display_name="DNS: Pause Zone" name="dns_pause_zone" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <commands>
+                <command>dnscmd 127.0.0.1 /zonepause %(dns_zone)s
+                    <success type="ci_in" value="Status = 0" message="DNS zone '%(dns_zone)s' paused."/>
+                    <failed type="default"/>            
+                </command>
+            </commands>
+        </task>
+        
+        <task display_name="DNS: Resume Zone" name="dns_resume_zone" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <commands>
+                <command>dnscmd 127.0.0.1 /zoneresume %(dns_zone)s
+                    <success type="ci_in" value="Status = 0" message="DNS zone '%(dns_zone)s' resumed."/>
+                    <failed type="default"/>            
+                </command>
+            </commands>
+        </task>
+
+        <task display_name="DNS: Reload Zone" name="dns_reload_zone" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <commands>
+                <command>dnscmd 127.0.0.1 /zonereload %(dns_zone)s
+                    <success type="ci_in" value="Status = 0" message="DNS zone '%(dns_zone)s' reload started. This may take a few minutes to complete in the background."/>
+                    <failed type="default"/>            
+                </command>
+            </commands>
+        </task>
+
+        <task display_name="DNS: Force Secondary Zone Refresh" name="dns_force_sec_zone_refresh" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <commands>
+                <command>dnscmd 127.0.0.1 /zonerefresh %(dns_zone)s
+                    <success type="ci_in" value="Status = 0" message="Secondary DNS zone '%(dns_zone)s' refresh started. This may take a few minutes to complete in the background."/>
+                    <failed type="default"/>            
+                </command>
+            </commands>
+        </task>
+
+        <task display_name="DNS: Start Scavenging" name="dns_start_scavenging" type="status">
+            <commands>
+                <command>dnscmd 127.0.0.1 /startscavenging
+                    <success type="ci_in" value="completed successfully" message="Scavenging started. This may take a few minutes to complete in the background."/>
+                    <failed type="default"/>            
+                </command>
+            </commands>
+        </task>
+    
+        <task display_name="DNS: Add new host (A record)" name="dns_add_a_record" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <input display_name="Host name:" name="record_host_name" type="string"/>
+            <input display_name="IP Address:" name="ip_address" type="ip"/>
+            <commands>
+                <command>dnscmd 127.0.0.1 /recordadd %(dns_zone)s %(record_host_name)s A %(ip_address)s
+                    <success type="ci_in" value="Add A Record for" message="Added A record for host '%(record_host_name)s.%(dns_zone)s' (%(ip_address)s)."/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>
+    
+        <task display_name="DNS: Delete host (A record)" name="dns_delete_a_record" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <input display_name="Host name:" name="record_host_name" type="string"/>
+            <commands>
+                <command>dnscmd 127.0.0.1 /recorddelete %(dns_zone)s %(record_host_name)s A /f
+                    <success type="ci_in" value="Deleted A record" message="Deleted A record for host '%(record_host_name)s.%(dns_zone)s'."/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>
+
+        <task display_name="DNS: Show host (A record)" name="dns_show_a_record" type="status">
+            <input display_name="DNS Zone:" name="dns_zone" device_parameter="dns_zone" type="select"/>
+            <input display_name="Host name:" name="record_host_name" type="string"/>
+            <commands>
+                <command attribute="host_ip" format="update_env" regex_capture="^.*\s+(\d+\.\d+\.\d+\.\d+)$">dnscmd 127.0.0.1 /zoneprint %(dns_zone)s | findstr %(record_host_name)s</command>
+                <command newline="lf">
+                    <success type="default" message="The host '%(record_host_name)s.%(dns_zone)s' maps to IP address '%(host_ip)s'."/>
+                </command>
+            </commands>
+        </task>        
+    </tasks>
+    
+</devicetemplate>

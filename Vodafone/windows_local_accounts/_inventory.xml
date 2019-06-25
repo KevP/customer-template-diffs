@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+  <tasks>
+    <task name='inventory_task' type='namevalue'>
+      <commands>
+        <command format="output_text" regex_capture="System Model:\s+(.*)" response_timeout="300" valuename="hw_version">systeminfo | findstr /B /C:&quot;System Model&quot;
+          <response/>
+        </command>
+        <command format="output_text" regex_capture="OS Version:\s+([0-9]*\.[0-9]*\.[0-9]*).*" response_timeout="300" valuename="sw_version">systeminfo | findstr /B /C:&quot;OS Version&quot;
+          <response/>
+        </command>
+        <command format="output_text" regex_capture="OS Version:\s+.*(Service\sPack\s\w* | N/A)" response_timeout="300" valuename="patch">systeminfo | findstr /B /C:&quot;OS Version&quot;
+        </command>
+      </commands>
+    </task>
+  </tasks>
+</devicetemplate>

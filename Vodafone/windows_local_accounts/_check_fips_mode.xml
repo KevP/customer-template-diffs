@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+    
+    <release_note timestamp="20140318T155500">
+		Added a task to check if FIPS encrpytion and hashing modes are enabled on Win2008 or Win7 device.
+    </release_note>
+    
+	<tasks>    
+		<task display_name='Check FIPS Mode' name='check_fips_mode' type='status'>
+			<commands>
+				<command>reg query HKLM\SYSTEM\CurrentControlSet\Control\Lsa\FipsAlgorithmPolicy /v Enabled
+					<success message="FIPS mode is ENABLED." type="ci_in" value="0x1"/>
+					<success message="FIPS mode is DISABLED." type="default"/>
+				</command>
+			</commands>
+		</task>
+	</tasks>
+	
+</devicetemplate>

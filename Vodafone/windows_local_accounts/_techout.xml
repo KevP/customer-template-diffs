@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+    <tasks>
+        <task display_name="Techout" name="techout" type="fileout">
+            <commands>
+                <command taskname="verify_and_create_share" type="call"/>
+                <command>echo Osirium Generated Techout> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo =========================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>date /T>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>time /T>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: systeminfo>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ===================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="300">systeminfo>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: ipconfig -all>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ======================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">ipconfig -all>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: ping 8.8.8.8>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo =====================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">ping 8.8.8.8>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: arp -a>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ===============>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">arp -a>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: netstat -rn>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ====================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">netstat -rn>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: netstat -abno>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ======================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">netstat -abno>> %(share_directory)s\%(device_name)s\techout.txt
+                    <success type="ci_match" value=""/>
+                    <success type="ci_in" value="Windows Sockets initialization failed"/>
+                    <failed type="default"/>
+                </command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: netstat -es>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ====================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">netstat -es>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: tasklist>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo =================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">tasklist>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: tasklist -svc>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ======================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">tasklist -svc>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo.>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo Command: sc query state= all>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command>echo ============================>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command response_timeout="60">sc query state= all>> %(share_directory)s\%(device_name)s\techout.txt</command>
+                <command command="smb.get" destination="%(local_filename)s" source="//%(share_root)s%(device_name)s/techout.txt" type="local_shell">
+                    <local_filename>%(filestore_location)s/%(device_name)s/techout_%(O_TASK_UTC_STARTTIME)s.txt</local_filename>
+                </command>
+                <command>del %(share_directory)s\%(device_name)s\techout.txt
+                    <success message="Techout completed, go to the files page to download" type="ci_match" value=""/>
+                    <failed type="default"/>
+                </command>
+            </commands>
+        </task>
+    </tasks>
+</devicetemplate>

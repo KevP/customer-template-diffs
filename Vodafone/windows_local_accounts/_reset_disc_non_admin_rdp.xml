@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+  <tasks>
+    <task display_name='Reset all disconnected non-administrator RDP sessions' name='reset_disc_non_admin_rdp' type='status'>
+      <commands>
+        <command>query session | findstr /v administrator | findstr /v services | findstr Disc</command>
+        <command>query session | findstr /v administrator | findstr /v services | findstr Disc&gt; osiriumdiscrdpsessions.txt</command>
+        <command>type osiriumdiscrdpsessions.txt</command>
+        <command>FOR /f &quot;tokens=1,2,3&quot; %%i IN (osiriumdiscrdpsessions.txt) DO reset session %%j
+          <success type="default"/>
+        </command>
+        <command>del osiriumdiscrdpsessions.txt
+          <success message="All disconnected non-administrator RDP sessions have been reset" type="ci_in" value=""/>
+        </command>
+      </commands>
+    </task>
+  </tasks>
+</devicetemplate>

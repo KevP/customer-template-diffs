@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+	<tasks>
+		<task display_name='Check for Internet Connectivity' name='check_for_internet_connectivity' type='status'>
+			<commands>
+				<command>ping 8.8.8.8
+					<success message="This device can reach the internet (tested using &quot;ping 8.8.8.8&quot;)." type="ci_in" value="Reply from.*bytes=.*time=.*TTL=.*"/>
+					<failed message="This device can NOT reach the internet (tested using &quot;ping 8.8.8.8&quot;)." type="default"/>
+				</command>
+			</commands>
+		</task>
+	</tasks>
+</devicetemplate>

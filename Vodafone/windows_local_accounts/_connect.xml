@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+
+  <access default="yes" protocol="winexe" type="shell">
+    <shellprompt>^(OSIRIUM#PROMPT#|.*&gt;)</shellprompt>
+    <preamble_task name="1">
+      <commands>
+        <command response_timeout="60" shellprompt="^OSIRIUM#PROMPT#">SET PROMPT=OSIRIUM#PROMPT#</command>
+      </commands>
+    </preamble_task>
+    <postamble_task name="1">
+      <commands>
+        <command shellprompt="">exit</command>
+      </commands>
+    </postamble_task>
+    <proxy_parameters connection=""/>
+  </access>
+
+  <access protocol="rdp" type="rdp"/>
+  
+  <usertools>
+    <usertool display_name="Remote Desktop" protocol="rdp"/>
+  </usertools>
+
+</devicetemplate>

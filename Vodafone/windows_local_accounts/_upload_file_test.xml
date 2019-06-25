@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<devicetemplate>
+  <tasks>
+    <task display_name="Upload File Test" name="upload_file_test" type="status">
+      <input display_name="File to upload" name="upload_filename" type="file"/>
+      <commands>
+        <command taskname="verify_and_create_share" type="call"/>
+        <command command="smb.put" destination="//%(share_root)s%(device_name)s/%(upload_filename.filename)s" source="%(upload_filename)s" type="local_shell">
+          <success type="ci_match" value=""/>
+          <success type="ci_in" value="putting"/>
+          <failed type="default"/>
+        </command>
+      </commands>
+    </task>
+  </tasks>
+</devicetemplate>
