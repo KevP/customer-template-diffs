@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate>
+    <tasks>
+        <task display_name="Remove Persistent Route" name="remove_persistent_route" type="status">
+          <input display_name="Network" name="remove_network" type="string"/>
+            <commands>
+                <command>route -p delete %(remove_network)s
+                    <success type="ci_in" value="OK!" message="Persistent route %(remove_network)s successfully removed."/>
+                    <failed type="default" message="Failed to remove persistent route: %(remove_network)s ."/>
+                </command>
+            </commands>
+        </task>
+    </tasks>
+</devicetemplate>

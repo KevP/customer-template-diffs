@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate>
+    <tasks>
+        <task display_name="Add Persistent Route" name="add_persistent_route" type="status"> 
+          <input display_name="Network" name="add_network" type="string"/>
+          <input display_name="Mask" name="add_mask" type="string"/>
+          <input display_name="Gateway" name="add_gateway" type="string"/>
+            <commands>
+                <command>route add -p %(add_network)s mask %(add_mask)s %(add_gateway)s
+                    <success type="ci_in" value="OK!" message="Persistent route %(add_network)s %(add_mask)s %(add_gateway)s successfully added."/>
+                    <failed type="default" message="Failed to add persistent route: %(add_network)s %(add_mask)s %(add_gateway)s."/>
+                </command>
+            </commands>
+        </task>
+    </tasks>
+</devicetemplate>
